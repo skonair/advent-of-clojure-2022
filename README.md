@@ -1,4 +1,4 @@
-# advent-of-clojure-2021
+# advent-of-clojure-2022
 
 A Clojure library designed to ... well, that part is up to you.
 
@@ -8,7 +8,7 @@ FIXME
 
 ## License
 
-Copyright © 2021 FIXME
+Copyright © 2022 FIXME
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
