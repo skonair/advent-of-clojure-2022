@@ -1,7 +1,6 @@
 (ns aoc-2022.day8
   (:require [clojure.string :as str]))
 
-
 (defn- trees-from-top [[x y]]
   (map #(vector x %) (range y)))
 
@@ -47,12 +46,34 @@
         max-y
         max-y)))
 
-(defn part2 []
-)
+(defn- walk-and-count [grid pos direction tree-height max-x max-y]
+  (loop [p pos akk 0]
+    (let [[nx ny :as npos] (mapv + p direction)]
+      (cond
+        (or (< nx 0) (> nx max-x) (< ny 0) (> ny max-y)) akk
+        (>= (grid npos) tree-height) (inc akk)
+        :otherwise (recur npos (inc akk))
+        ))))
+
+(defn- scenic-score [grid pos max-x max-y]
+  (let [tree-height (grid pos)]
+    (*
+      (walk-and-count grid pos [0 1] tree-height max-x max-y)
+      (walk-and-count grid pos [0 -1] tree-height max-x max-y)
+      (walk-and-count grid pos [1 0] tree-height max-x max-y)
+      (walk-and-count grid pos [-1 0] tree-height max-x max-y))))
+
+(defn part2 [grid]
+  (let [max-x (apply max (map (comp first first) grid))
+        max-y (apply max (map (comp second first) grid))]
+    (apply
+      max
+      (for [x (range (inc max-x)) y (range (inc max-y))]
+        (scenic-score grid [x y] max-x max-y)))))
 
 (def lines (str/split-lines (slurp "resources/day8_input.txt")))
 
-(def grid (into {} (flatten (map-indexed (fn [y line] (map-indexed (fn [x tree] {[x y] tree}) line)) lines))))
+(def grid (into {} (flatten (map-indexed (fn [y line] (map-indexed (fn [x tree] {[x y] (Integer. (str tree))}) line)) lines))))
 
-(println "Day 8 - 1: " (part1 input))
-(println "Day 8 - 2: " (part2 input))
+(println "Day 8 - 1: " (part1 input)) ; 1816
+(println "Day 8 - 2: " (part2 input)) ; 383520
